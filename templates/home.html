@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block body %}
+
+<section class="text-gray-700 body-font">
+    <div class="container mx-auto mt-3 flex px-5 py-3 items-center justify-center flex-col">
+        <div class="text-center lg:w-2/3 w-full">
+            <h2 class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Welcome to TODO List Web App</h2>
+        </div>
+    </div>
+
+
+
+</section>
+
+<section class="text-gray-700 body-font relative">
+    <div class="container px-5 py-24 mx-auto">
+        <div class="flex flex-col text-center w-full mb-12">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Add Task</h1>
+        </div>
+        <div class="lg:w-1/2 md:w-2/3 mx-auto">
+            <div class="flex flex-wrap -m-2">
+                <div class="p-2 w-full">
+                    <input
+                        class="w-full bg-gray-100 rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2"
+                        placeholder="Task Name" type="text" id="task_title">
+                </div>
+                <div class="p-2 w-full">
+                    <span>Add Date and Time</span>
+                </div>
+                <div class="p-2 w-full">
+                    <input
+                        class="w-full bg-gray-100 rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2"
+                        placeholder="Task Name" type="datetime-local" id="datetime" >
+                </div>
+                <div class="p-2 w-full">
+                    <textarea
+                        class="w-full bg-gray-100 rounded border border-gray-400 focus:outline-none h-48 focus:border-indigo-500 text-base px-4 py-2 resize-none block"
+                        placeholder="Description" id="task_desc"></textarea>
+                </div>
+                <div class="p-2 w-full">
+                    <button onclick="addTask()"
+                        class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Add
+                        Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<!-- <script>
+      $(document).ready(function () {
+          console.log("ready!");
+          console.log("1st");
+          const isChack = localStorage.getItem('token')
+          if (isChack) {
+              window.location.replace("/signin");
+          }
+      });
+  </script> -->
+
+<script>
+    function addTask() {
+        try {
+            console.log("add task");
+            let task_title = document.getElementById("task_title").value
+            let task_desc = document.getElementById("task_desc").value
+            let a = document.getElementById("datetime").value
+
+            console.log(a);
+            console.log(a.split("T"));
+
+            date_time = a.split("T")
+
+            time = date_time[1].match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/);
+
+            if (time.length > 1) { // If time format correct
+                time = time.slice(1);  // Remove full string match value
+                time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+                time[0] = +time[0] % 12 || 12; // Adjust hours
+            }
+            console.log(time.join(''));
+
+            date = date_time[0].split("-")
+            year = date[0]
+            month = date[1]
+            day = date[2]
+
+            date = `${day}-${month}-${year}`
+
+            time = time.join(''); // return adjusted time or original string
+
+            // console.log(date);
+            // console.log(time);
+
+
+            let data = {
+                task_title: task_title,
+                task_desc: task_desc,
+                date : date,
+                time : time,
+                raw_date_time : a,
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/add/",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log("Succcess ==== >");
+                    responce = JSON.parse(data)
+                    console.log(responce);
+                    alert(responce.message)
+                    // console.log(data.token);
+                    // console.log("data 1 token");
+
+                    // const tokenData = JSON.parse(data)
+                    // console.log(tokenData);
+                    // console.log(tokenData.token);
+                    window.location.replace("/task");
+                    // localStorage.setItem("token",tokenData.token)
+                },
+                dataType: "text",
+                error: function (err) {
+                    console.log("---------ERROR----->")
+                    console.log(err.responseText);
+                }
+            });
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+</script>
+
+{% endblock body %}
