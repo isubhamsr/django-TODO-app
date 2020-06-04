@@ -127,7 +127,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-STATICFILES_STORAGE='whitenose.django.GzipMainfestStaticFilesStorage'
+STATICFILES_STORAGE='whitenoise.storage.CompressedMainfestStaticFilesStorage'
 
 import dj_database_url
 prod_db = dj_database_url.config(conn_max_age=500)
